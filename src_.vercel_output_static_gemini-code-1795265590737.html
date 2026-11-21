@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+<meta name="google-site-verification" content="VJhCMIssoO2CeA54hsXEluHpbDIdB0n5xm3ZTW-zLiw" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArcadeIndie - Next-Gen Cloud Arcade Portal AAA</title>
+    
+    <!-- FAVICON -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22logoGrad%22 x1=%220%25%22 y1=%22100%25%22 x2=%22100%25%22 y2=%220%25%22><stop offset=%220%25%22 stop-color=%22%23c084fc%22/><stop offset=%2250%25%22 stop-color=%22%2338bdf8%22/><stop offset=%22100%25%22 stop-color=%22%2300f2fe%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 rx=%2228%22 fill=%22url(%23logoGrad)%22/><path d=%22M25 40h50a14 14 0 0 1 14 14v6a14 14 0 0 1-14 14H25a14 14 0 0 1-14-14v-6a14 14 0 0 1 14-14z%22 fill=%22%23ffffff%22/><path d=%22M32 53h7m-3.5-3.5v7m36.5-3.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zm-7 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0 z%22 stroke=%22%2338bdf8%22 stroke-width=%222.8%22 stroke-linecap=%22round%22/></svg>">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Orbitron:wght@600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK Compat -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <!-- Vercel Web Analytics -->
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { 
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                        pixel: ['"Press Start 2P"', 'monospace']
+                    },
+                    colors: {
+                        dark: { 
+                            950: '#03050a',
+                            900: '#070913', 
+                            850: '#0a0f1d',
+                            800: '#0f172a', 
+                            700: '#1e293b', 
+                            600: '#334155' 
+                        },
+                        neon: { 
+                            cyan: '#00f2fe', 
+                            blue: '#38bdf8', 
+                            purple: '#c084fc', 
+                            pink: '#f472b6', 
+                            green: '#34d399',
+                            yellow: '#fbbf24',
+                            orange: '#ff7700'
+                        }
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 25px -3px rgba(0, 242, 254, 0.45)',
+                        'glow-purple': '0 0 25px -3px rgba(192, 132, 252, 0.45)',
+                        'glow-pink': '0 0 25px -3px rgba(244, 114, 182, 0.45)',
+                        'glow-orange': '0 0 25px -3px rgba(255, 119, 0, 0.5)',
+                        'glow-green': '0 0 25px -3px rgba(52, 211, 153, 0.5)',
+                        'glow-lg': '0 0 50px -5px rgba(56, 189, 248, 0.5)',
+                        'card-hover': '0 20px 40px -15px rgba(0, 242, 254, 0.25)'
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite ease-in-out',
+                        'float': 'float 6s ease-in-out infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                        'gradient-x': 'gradientX 6s ease infinite'
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%, 100%': { opacity: '0.4', filter: 'drop-shadow(0 0 15px rgba(0,242,254,0.4))' },
+                            '50%': { opacity: '0.8', filter: 'drop-shadow(0 0 30px rgba(192,132,252,0.8))' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' }
+                        },
+                        gradientX: {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar AAA */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #03050a; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #00f2fe, #c084fc); border-radius: 999px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00f2fe; }
+
+        /* Auto-Scale Frame Container */
+        .auto-scale-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #000;
+        }
+        .auto-scale-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+            object-fit: contain;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel-glow {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(0, 242, 254, 0.25);
+            box-shadow: 0 0 30px rgba(0, 242, 254, 0.1);
+        }
+
+        /* Ambient Animated Grid Background */
+        #bgCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Shimmer Border Effects */
+        .shimmer-border {
+            position: relative;
+        }
+        .shimmer-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            background: linear-gradient(90deg, #00f2fe, #c084fc, #f472b6, #00f2fe);
+            border-radius: inherit;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            background-size: 300% 300%;
+            animation: gradientX 4s ease infinite;
+        }
+        .shimmer-border:hover::before {
+            opacity: 1;
+        }
+
+        /* TEMAS TEMPORALES */
+        body.theme-halloween {
+            background-color: #0d0514;
+        }
+        body.theme-halloween ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #ff7700, #a855f7);
+        }
+
+        body.theme-navidad {
+            background-color: #03120e;
+        }
+        body.theme-navidad ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #ef4444, #10b981);
+        }
+
+        body.theme-reyes {
+            background-color: #0f0a1c;
+        }
+        body.theme-reyes ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #eab308, #a855f7);
+        }
+    </style>
+</head>
+<body class="bg-dark-950 text-slate-100 font-sans min-h-screen flex flex-col selection:bg-neon-cyan selection:text-dark-950 overflow-x-hidden relative">
+
+    <!-- CANVAS ANIMADO CIBERNÉTICO DE FONDO -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- LUCES AMBIENTALES FLOTANTES -->
+    <div id="ambientGlow1" class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-neon-cyan/10 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse-glow"></div>
+    <div id="ambientGlow2" class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-neon-purple/10 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse-glow" style="animation-delay: 1.5s;"></div>
+
+    <!-- HEADER AAA -->
+    <header class="sticky top-0 z-40 bg-dark-950/70 backdrop-blur-2xl border-b border-white/10 px-4 sm:px-6 lg:px-10 py-3.5 transition-all duration-300 shadow-2xl">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            
+            <!-- Logo AAA -->
+            <div class="flex items-center gap-3 cursor-pointer shrink-0 group" onclick="playSfx('click'); goHome();">
+                <div id="logoBadge" class="relative w-11 h-11 rounded-2xl bg-gradient-to-tr from-neon-purple via-neon-blue to-neon-cyan flex items-center justify-center shadow-glow-cyan group-hover:scale-105 transition-all duration-300">
+                    <i id="logoIcon" class="fa-solid fa-gamepad text-dark-950 text-2xl group-hover:rotate-12 transition-transform"></i>
+                    <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-neon-cyan border-2 border-dark-950"></span>
+                    </span>
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <span class="font-display text-xl sm:text-2xl font-black tracking-wider bg-gradient-to-r from-white via-slate-100 to-neon-cyan bg-clip-text text-transparent">ARCADE<span class="text-neon-cyan">INDIE</span></span>
+                        <span id="seasonBadge" class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-neon-purple/20 text-neon-purple border border-neon-purple/40">AAA</span>
+                    </div>
+                    <span class="block text-[9px] uppercase tracking-[0.2em] text-slate-400 font-bold group-hover:text-neon-cyan transition-colors">Cloud Gaming Arena v3.0</span>
+                </div>
+            </div>
+
+            <!-- Buscador -->
+            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-slate-400 group-focus-within:text-neon-cyan transition-colors">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </span>
+                    <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Buscar títulos, creadores o categorías..." class="w-full pl-11 pr-12 py-2.5 bg-dark-900/80 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan/50 focus:shadow-glow-cyan transition-all placeholder:text-slate-500 text-white backdrop-blur-md">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <kbd class="px-2 py-1 text-[10px] font-semibold text-slate-400 bg-dark-800 border border-slate-700 rounded-lg">CTRL + K</kbd>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Acciones de Usuario -->
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>ONLINE • 60 FPS</span>
+                </div>
+
+                <button onclick="playSfx('click'); toggleFullScreen()" title="Pantalla completa" class="w-10 h-10 rounded-2xl bg-dark-800/80 border border-white/10 text-slate-300 hover:text-neon-cyan hover:border-neon-cyan/50 hover:shadow-glow-cyan flex items-center justify-center text-xs transition-all duration-300">
+                    <i id="fullscreenIcon" class="fa-solid fa-expand text-sm"></i>
+                </button>
+
+                <div id="userSection">
+                    <button onclick="playSfx('click'); openAuthModal()" class="px-4 py-2 rounded-2xl bg-dark-800/80 border border-white/10 text-xs font-bold text-neon-cyan hover:bg-dark-700 hover:border-neon-cyan/50 hover:shadow-glow-cyan flex items-center gap-2 transition-all duration-300">
+                        <i class="fa-solid fa-user-astronaut text-sm"></i>
+                        <span class="hidden sm:inline">Iniciar Sesión</span>
+                    </button>
+                </div>
+
+                <button id="btnUploadNav" onclick="playSfx('click'); openUploaderModal()" title="Subir o Enlazar Juego" class="hidden px-4 py-2 rounded-2xl bg-gradient-to-r from-neon-purple to-neon-blue border border-white/20 hover:shadow-glow-purple flex items-center gap-2 text-xs font-black text-dark-950 transition-all duration-300 hover:scale-105">
+                    <i class="fa-solid fa-cloud-arrow-up text-dark-950"></i>
+                    <span class="hidden sm:inline">Publicar Juego</span>
+                </button>
+
+                <button id="btnModNav" onclick="playSfx('click'); openModerationPanel()" title="Bandeja de Moderación" class="hidden px-4 py-2 rounded-2xl bg-gradient-to-r from-rose-600 to-orange-500 border border-white/20 hover:shadow-glow-orange flex items-center gap-2 text-xs font-black text-white transition-all duration-300 hover:scale-105">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span class="hidden sm:inline">Moderación</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Buscador Móvil -->
+        <div class="mt-3 block md:hidden max-w-7xl mx-auto">
+            <div class="relative group">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                </span>
+                <input type="text" oninput="handleSearch(this.value)" placeholder="Buscar en el catálogo cloud..." class="w-full pl-9 pr-4 py-2 bg-dark-900/90 border border-white/10 rounded-xl text-xs focus:outline-none focus:border-neon-cyan text-white placeholder:text-slate-500">
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <div class="relative z-10 flex-1">
+
+        <!-- VISTA PRINCIPAL (HOME) -->
+        <div id="homeView" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+            <!-- HERO FEATURED AAA SHOWCASE BANNER -->
+            <section id="heroSection" class="relative rounded-3xl overflow-hidden glass-panel border border-white/15 p-6 sm:p-10 shadow-2xl transition-all">
+                <div class="absolute inset-0 bg-gradient-to-r from-dark-950 via-dark-950/80 to-transparent z-10"></div>
+                <div id="heroBgImage" class="absolute inset-0 bg-cover bg-center transition-all duration-700 opacity-40 scale-105" style="background-image: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1200&q=80');"></div>
+                
+                <div class="relative z-20 max-w-2xl space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span id="heroBadge" class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-gradient-to-r from-neon-pink to-neon-purple text-dark-950 shadow-glow-pink">
+                            🔥 DESTACADO AAA
+                        </span>
+                        <span class="text-xs font-bold text-slate-300 flex items-center gap-1">
+                            <i class="fa-solid fa-star text-neon-yellow"></i> 4.9 / 5.0
+                        </span>
+                    </div>
+
+                    <h1 id="heroTitle" class="font-display text-3xl sm:text-5xl font-black text-white tracking-wide leading-tight">
+                        EVENTS MULTIPLAYER
+                    </h1>
+
+                    <p id="heroDesc" class="text-sm sm:text-base text-slate-300 leading-relaxed line-clamp-3">
+                        Únete al evento activo en vivo. Todos los jugadores juntos en el mismo mapa Pixel Art. Si juegas durante el mes de Octubre, obtendrás recompensas exclusivas guardadas en tu cuenta de ArcadeIndie.
+                    </p>
+
+                    <div class="pt-2 flex flex-wrap items-center gap-4">
+                        <button id="heroPlayBtn" onclick="playSfx('click')" class="px-7 py-3.5 rounded-2xl bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple text-dark-950 font-black text-sm tracking-wider uppercase flex items-center gap-3 shadow-glow-cyan hover:scale-105 transition-all duration-300">
+                            <i class="fa-solid fa-play text-base"></i> JUGAR AHORA
+                        </button>
+                        <button onclick="playSfx('click'); scrollToCatalog()" class="px-6 py-3.5 rounded-2xl bg-dark-800/80 border border-white/20 text-slate-200 hover:text-neon-cyan font-bold text-sm flex items-center gap-2 hover:bg-dark-700 transition-all">
+                            <i class="fa-solid fa-list-ul"></i> Explorar Todo
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTENEDOR PRINCIPAL -->
+            <div id="catalogSection" class="flex flex-col lg:flex-row gap-8">
+
+                <!-- SIDEBAR CATEGORÍAS -->
+                <aside class="w-full lg:w-64 shrink-0">
+                    <div class="sticky top-28 glass-panel rounded-3xl p-5 border border-white/10 space-y-6 shadow-xl">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 px-2">
+                                <h3 class="text-xs font-black uppercase tracking-widest text-slate-400">Categorías</h3>
+                                <span class="w-2 h-2 rounded-full bg-neon-cyan shadow-glow-cyan"></span>
+                            </div>
+                            
+                            <nav class="space-y-2" id="categoryNavDesktop">
+                                <button onclick="playSfx('click'); filterCategory('todos')" data-cat="todos" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-neon-purple/30 to-neon-blue/30 border border-neon-purple/50 text-white shadow-glow-purple">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-fire-flame-curved text-neon-purple w-5"></i> Todos</span>
+                                    <span class="text-xs bg-dark-900 px-2.5 py-1 rounded-xl text-slate-200 font-extrabold border border-white/10" id="count-todos">0</span>
+                                </button>
+
+                                <button onclick="playSfx('click'); filterCategory('accion')" data-cat="accion" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-slate-300 hover:bg-dark-800/80 hover:text-white border border-transparent hover:border-white/10">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-bolt text-neon-yellow w-5"></i> Acción</span>
+                                    <span class="text-xs bg-dark-900/60 px-2.5 py-1 rounded-xl text-slate-400 font-extrabold" id="count-accion">0</span>
+                                </button>
+
+                                <button onclick="playSfx('click'); filterCategory('puzzle')" data-cat="puzzle" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-slate-300 hover:bg-dark-800/80 hover:text-white border border-transparent hover:border-white/10">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-puzzle-piece text-neon-cyan w-5"></i> Puzzle</span>
+                                    <span class="text-xs bg-dark-900/60 px-2.5 py-1 rounded-xl text-slate-400 font-extrabold" id="count-puzzle">0</span>
+                                </button>
+
+                                <button onclick="playSfx('click'); filterCategory('carreras')" data-cat="carreras" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-slate-300 hover:bg-dark-800/80 hover:text-white border border-transparent hover:border-white/10">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-flag-checkered text-rose-400 w-5"></i> Carreras</span>
+                                    <span class="text-xs bg-dark-900/60 px-2.5 py-1 rounded-xl text-slate-400 font-extrabold" id="count-carreras">0</span>
+                                </button>
+
+                                <button onclick="playSfx('click'); filterCategory('deportes')" data-cat="deportes" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-slate-300 hover:bg-dark-800/80 hover:text-white border border-transparent hover:border-white/10">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-futbol text-emerald-400 w-5"></i> Deportes</span>
+                                    <span class="text-xs bg-dark-900/60 px-2.5 py-1 rounded-xl text-slate-400 font-extrabold" id="count-deportes">0</span>
+                                </button>
+
+                                <button onclick="playSfx('click'); filterCategory('arcade')" data-cat="arcade" class="category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-slate-300 hover:bg-dark-800/80 hover:text-white border border-transparent hover:border-white/10">
+                                    <span class="flex items-center gap-3"><i class="fa-solid fa-ghost text-neon-pink w-5"></i> Arcade</span>
+                                    <span class="text-xs bg-dark-900/60 px-2.5 py-1 rounded-xl text-slate-400 font-extrabold" id="count-arcade">0</span>
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- MAIN CATALOG GRID -->
+                <main class="flex-1 min-w-0 space-y-6">
+
+                    <!-- Mobile Scrollable Categories -->
+                    <div class="flex items-center gap-2.5 overflow-x-auto pb-2 lg:hidden scrollbar-none">
+                        <button onclick="playSfx('click'); filterCategory('todos')" data-cat-m="todos" class="category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all bg-neon-purple text-dark-950 shadow-glow-purple">Todos</button>
+                        <button onclick="playSfx('click'); filterCategory('accion')" data-cat-m="accion" class="category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all glass-panel text-slate-300">Acción</button>
+                        <button onclick="playSfx('click'); filterCategory('puzzle')" data-cat-m="puzzle" class="category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all glass-panel text-slate-300">Puzzle</button>
+                        <button onclick="playSfx('click'); filterCategory('carreras')" data-cat-m="carreras" class="category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all glass-panel text-slate-300">Carreras</button>
+                        <button onclick="playSfx('click'); filterCategory('deportes')" data-cat-m="deportes" class="category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all glass-panel text-slate-300">Deportes</button>
+                        <button onclick="playSfx('click'); filterCategory('arcade')" data-cat-m="arcade" class="category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all glass-panel text-slate-300">Arcade</button>
+                    </div>
+
+                    <!-- Encabezado -->
+                    <div class="flex items-center justify-between pb-2 border-b border-white/10">
+                        <h2 id="sectionTitle" class="text-xl sm:text-2xl font-black text-white flex items-center gap-3 font-display tracking-wide">
+                            <span class="w-2.5 h-7 rounded-full bg-gradient-to-b from-neon-cyan to-neon-blue shadow-glow-cyan"></span> 
+                            CATÁLOGO EN VIVO
+                        </h2>
+                        <span class="text-xs text-neon-cyan font-black px-4 py-1.5 glass-panel rounded-full border border-neon-cyan/30 shadow-glow-cyan" id="gameCountIndicator">
+                            Cargando...
+                        </span>
+                    </div>
+
+                    <!-- Grilla de Tarjetas -->
+                    <div id="gamesGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- VISTA WATCH -->
+        <div id="watchView" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8">
+            <div class="flex-1 min-w-0 space-y-6">
+
+                <div class="flex items-center justify-between px-5 py-2.5 glass-panel rounded-2xl border border-white/10 text-xs">
+                    <div class="flex items-center gap-3">
+                        <span class="flex h-2.5 w-2.5 relative">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </span>
+                        <span class="font-extrabold text-white uppercase tracking-wider">Servidor Cloud ACTIVO</span>
+                    </div>
+                    <span class="text-slate-400 font-semibold hidden sm:inline">Events Engine Multiplayer</span>
+                </div>
+
+                <!-- Reproductor de Juego -->
+                <div id="youtubePlayerContainer" class="w-full aspect-video bg-dark-950 rounded-3xl overflow-hidden border-2 border-neon-cyan/60 relative shadow-glow-lg group shimmer-border">
+                    <div class="absolute top-4 right-4 z-20 flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
+                        <button onclick="playSfx('click'); reloadGamePlayer()" title="Reiniciar Juego" class="w-10 h-10 rounded-2xl bg-dark-950/80 hover:bg-neon-blue text-white hover:text-dark-950 border border-white/20 backdrop-blur-xl flex items-center justify-center text-xs font-bold shadow-xl transition-all">
+                            <i class="fa-solid fa-rotate-right"></i>
+                        </button>
+                        <button onclick="playSfx('click'); toggleGameFullScreen()" class="px-4 py-2.5 bg-gradient-to-r from-neon-cyan to-neon-blue text-dark-950 hover:scale-105 rounded-2xl text-xs font-black border border-white/30 backdrop-blur-xl flex items-center gap-2 shadow-glow-cyan transition-all">
+                            <i class="fa-solid fa-expand" id="gameFullscreenIcon"></i> <span>Pantalla Completa</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Detalles del Juego -->
+                <div class="space-y-4">
+                    <h1 id="watchTitle" class="font-display text-2xl sm:text-4xl font-black text-white tracking-wide">Events</h1>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-white/10">
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-neon-purple via-neon-blue to-neon-cyan flex items-center justify-center font-black text-dark-950 uppercase text-lg shadow-glow-purple" id="authorAvatar">E</div>
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <h4 id="watchAuthor" class="font-bold text-base text-white">ArcadeIndieOficcial</h4>
+                                    <i class="fa-solid fa-circle-check text-neon-cyan text-xs" title="Verificado"></i>
+                                </div>
+                                <span class="text-xs text-slate-400">Servidor Multijugador Oficial</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <button onclick="playSfx('like'); toggleLikeCurrentGame()" id="watchLikeBtn" class="px-5 py-3 glass-panel hover:border-rose-500/50 rounded-2xl text-xs font-bold flex items-center gap-2.5 text-slate-200 transition-all shadow-md">
+                                <i class="fa-regular fa-heart text-base text-rose-400" id="watchLikeIcon"></i> 
+                                <span id="watchLikesCount">0</span>
+                            </button>
+
+                            <button onclick="playSfx('click'); goHome()" class="px-5 py-3 glass-panel hover:border-neon-cyan/50 rounded-2xl text-xs font-bold text-slate-200 flex items-center gap-2 shadow-md transition-all">
+                                <i class="fa-solid fa-arrow-left"></i> Catálogo
+                            </button>
+
+                            <div id="ownerActionsWatch" class="hidden flex items-center gap-2">
+                                <button id="watchEditBtn" class="px-4 py-3 bg-neon-cyan/20 border border-neon-cyan/50 text-neon-cyan hover:bg-neon-cyan hover:text-dark-950 rounded-2xl text-xs font-bold transition-all">Editar</button>
+                                <button id="watchDeleteBtn" class="px-4 py-3 bg-rose-500/20 border border-rose-500/50 text-rose-400 hover:bg-rose-500 hover:text-white rounded-2xl text-xs font-bold transition-all">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-3xl text-xs text-slate-300 space-y-3 shadow-xl border border-white/10">
+                        <div class="font-bold text-neon-cyan flex flex-wrap gap-4 text-xs uppercase tracking-wider">
+                            <span id="watchCategory" class="px-3 py-1 bg-neon-cyan/10 border border-neon-cyan/30 rounded-xl">Categoría</span>
+                            <span id="watchDate" class="text-slate-400 flex items-center">Fecha</span>
+                        </div>
+                        <p id="watchDesc" class="text-slate-200 text-sm leading-relaxed">Descripción del juego en streaming.</p>
+                    </div>
+                </div>
+
+                <!-- REACCIONES -->
+                <div class="glass-panel p-6 rounded-3xl space-y-4 border border-white/10 shadow-xl">
+                    <h3 class="text-base font-black text-white flex items-center gap-2">
+                        <i class="fa-solid fa-bolt text-neon-yellow"></i> VALORACIONES RÁPIDAS
+                    </h3>
+                    <p class="text-xs text-slate-400">Expresa tu feedback instantáneo en vivo:</p>
+                    
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="playSfx('click'); sendQuickReaction('🔥 ¡Impresionante!')" class="p-3.5 glass-panel hover:border-neon-purple rounded-2xl text-xs font-bold text-slate-200 flex flex-col items-center gap-2 transition-all hover:scale-105 group">
+                            <span class="text-2xl group-hover:scale-125 transition-transform">🔥</span>
+                            <span class="group-hover:text-neon-purple">¡Impresionante!</span>
+                        </button>
+                        <button onclick="playSfx('click'); sendQuickReaction('⚡ Muy Divertido')" class="p-3.5 glass-panel hover:border-neon-cyan rounded-2xl text-xs font-bold text-slate-200 flex flex-col items-center gap-2 transition-all hover:scale-105 group">
+                            <span class="text-2xl group-hover:scale-125 transition-transform">⚡</span>
+                            <span class="group-hover:text-neon-cyan">Muy Divertido</span>
+                        </button>
+                        <button onclick="playSfx('click'); sendQuickReaction('🎯 Gran Reto')" class="p-3.5 glass-panel hover:border-neon-yellow rounded-2xl text-xs font-bold text-slate-200 flex flex-col items-center gap-2 transition-all hover:scale-105 group">
+                            <span class="text-2xl group-hover:scale-125 transition-transform">🎯</span>
+                            <span class="group-hover:text-neon-yellow">Gran Reto</span>
+                        </button>
+                        <button onclick="playSfx('click'); sendQuickReaction('⭐ Obra Maestra')" class="p-3.5 glass-panel hover:border-neon-pink rounded-2xl text-xs font-bold text-slate-200 flex flex-col items-center gap-2 transition-all hover:scale-105 group">
+                            <span class="text-2xl group-hover:scale-125 transition-transform">⭐</span>
+                            <span class="group-hover:text-neon-pink">Obra Maestra</span>
+                        </button>
+                    </div>
+
+                    <div class="pt-4 border-t border-white/10">
+                        <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 mb-3">Reacciones Recientes (<span id="reactionsCount">0</span>)</h4>
+                        <div id="reactionsList" class="space-y-2.5 max-h-48 overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full lg:w-80 shrink-0 space-y-4">
+                <h3 class="font-black text-xs uppercase tracking-widest text-slate-400 px-1">A continuación</h3>
+                <div id="sidebarSuggestions" class="space-y-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL AUTENTICACIÓN -->
+    <div id="authModal" class="fixed inset-0 z-50 bg-dark-950/80 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-neon-cyan/40 rounded-3xl max-w-md w-full p-8 shadow-2xl relative shimmer-border">
+            <button onclick="playSfx('click'); closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div id="registerForm" class="space-y-5">
+                <div>
+                    <h3 class="font-display text-xl font-black text-white">CREAR PERFIL EN LA NUBE</h3>
+                    <p class="text-xs text-slate-400 mt-1">Únete a la red arcade y guarda tus records.</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Nombre de Usuario</label>
+                        <input type="text" id="regUsername" placeholder="Ej: GamerPro99" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-neon-cyan text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Contraseña</label>
+                        <input type="password" id="regPassword" placeholder="••••••••" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-neon-cyan text-white">
+                    </div>
+                    <button onclick="playSfx('click'); handleRegister()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-neon-purple to-neon-blue text-dark-950 font-black text-sm shadow-glow-purple hover:scale-[1.02] transition-all">Registrarse</button>
+                </div>
+                <p class="text-xs text-slate-400 text-center">¿Ya tienes cuenta? <button onclick="playSfx('click'); toggleAuthMode('login')" class="text-neon-cyan font-bold underline">Inicia Sesión</button></p>
+            </div>
+
+            <div id="loginForm" class="hidden space-y-5">
+                <div>
+                    <h3 class="font-display text-xl font-black text-white">INICIAR SESIÓN</h3>
+                    <p class="text-xs text-slate-400 mt-1">Accede a tus credenciales cloud.</p>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Usuario</label>
+                        <input type="text" id="loginUsername" placeholder="Tu usuario" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-neon-cyan text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-300 uppercase mb-1.5">Contraseña</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm focus:outline-none focus:border-neon-cyan text-white">
+                    </div>
+                    <button onclick="playSfx('click'); handleLogin()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-neon-cyan to-neon-blue text-dark-950 font-black text-sm shadow-glow-cyan hover:scale-[1.02] transition-all">Ingresar</button>
+                </div>
+                <p class="text-xs text-slate-400 text-center">¿No tienes cuenta? <button onclick="playSfx('click'); toggleAuthMode('register')" class="text-neon-cyan font-bold underline">Créala aquí</button></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUBIR / ACTUALIZAR -->
+    <div id="uploaderModal" class="fixed inset-0 z-50 bg-dark-950/80 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-neon-purple/40 rounded-3xl max-w-lg w-full p-8 shadow-2xl relative max-h-[90vh] overflow-y-auto shimmer-border">
+            <button onclick="playSfx('click'); closeUploaderModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <h3 id="uploaderModalTitle" class="font-display text-xl font-black text-white mb-1">PUBLICAR JUEGO EN LA NUBE</h3>
+            <p class="text-xs text-slate-400 mb-6">Panel de administración de contenido ArcadeIndie.</p>
+
+            <div class="space-y-4">
+                <input type="hidden" id="editingGameId" value="">
+                
+                <div class="grid grid-cols-2 gap-2 bg-dark-900/90 p-1.5 rounded-2xl border border-white/10">
+                    <button type="button" id="tabBtnFile" onclick="playSfx('click'); switchSourceTab('file')" class="py-2.5 rounded-xl text-xs font-bold text-white bg-dark-700 transition-all shadow-md">Archivo HTML</button>
+                    <button type="button" id="tabBtnUrl" onclick="playSfx('click'); switchSourceTab('url')" class="py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all">URL Externa</button>
+                </div>
+
+                <div id="sourceFileContainer">
+                    <div class="border-2 border-dashed border-slate-600 rounded-2xl p-6 text-center bg-dark-900/40 cursor-pointer hover:border-neon-cyan transition-colors" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-neon-cyan mb-2"></i>
+                        <p class="text-xs font-bold text-white">Cargar archivo bundle .html</p>
+                        <input type="file" id="fileInput" accept=".html" class="hidden" onchange="handleFileSelected(this)">
+                        <span id="selectedFileName" class="text-xs text-neon-cyan font-semibold block mt-2 truncate"></span>
+                    </div>
+                </div>
+
+                <div id="sourceUrlContainer" class="hidden">
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">URL del Juego</label>
+                    <input type="url" id="customGameUrl" placeholder="https://ejemplo.com/juego/index.html" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-neon-cyan">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Nombre del Juego</label>
+                    <input type="text" id="customGameName" placeholder="Ej: Cyber Runner 2099" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-neon-cyan">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Categoría</label>
+                    <select id="customGameCategory" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-neon-cyan">
+                        <option value="arcade">Arcade</option>
+                        <option value="accion">Acción</option>
+                        <option value="puzzle">Puzzle</option>
+                        <option value="carreras">Carreras</option>
+                        <option value="deportes">Deportes</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Miniatura / Imagen de Portada (URL)</label>
+                    <input type="text" id="thumbImageUrl" placeholder="https://images.unsplash.com/..." class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-neon-cyan">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Gradiente Predeterminado</label>
+                    <select id="thumbGradient" class="w-full px-4 py-3 bg-dark-900/90 border border-white/10 rounded-2xl text-sm text-white focus:outline-none focus:border-neon-cyan">
+                        <option value="from-pink-600 to-rose-900">Cyber Pink</option>
+                        <option value="from-cyan-500 to-blue-900">Neon Cyan</option>
+                        <option value="from-purple-600 to-indigo-950">Deep Purple</option>
+                        <option value="from-emerald-500 to-teal-900">Matrix Green</option>
+                    </select>
+                </div>
+
+                <button onclick="playSfx('click'); submitCustomGame()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-neon-cyan via-neon-blue to-neon-purple text-dark-950 font-black text-sm uppercase tracking-wider hover:scale-[1.02] shadow-glow-cyan transition-all">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Publicar en la Nube
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BANDEJA DE MODERACIÓN -->
+    <div id="moderationModal" class="fixed inset-0 z-50 bg-dark-950/80 backdrop-blur-xl hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-rose-500/40 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative max-h-[90vh] overflow-hidden flex flex-col">
+            <button onclick="playSfx('click'); closeModerationPanel()" class="absolute top-5 right-5 text-slate-400 hover:text-white z-10"><i class="fa-solid fa-xmark text-xl"></i></button>
+            
+            <div class="mb-5">
+                <h3 class="font-display text-xl font-black text-white flex items-center gap-2">
+                    <i class="fa-solid fa-shield-halved text-rose-400"></i> BANDEJA DE MODERACIÓN
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">Gestiona usuarios de la red. Banear elimina la cuenta de forma permanente.</p>
+            </div>
+
+            <div class="mb-4">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                    </span>
+                    <input type="text" id="modSearchInput" oninput="filterModUsers(this.value)" placeholder="Buscar usuario..." class="w-full pl-9 pr-4 py-2.5 bg-dark-900/90 border border-white/10 rounded-xl text-sm focus:outline-none focus:border-rose-400 text-white placeholder:text-slate-500">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-xs text-slate-400 mb-3 px-1">
+                <span id="modUserCount">Cargando usuarios...</span>
+                <button onclick="playSfx('click'); loadModerationUsers()" class="text-rose-400 hover:text-rose-300 font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-rotate-right"></i> Actualizar
+                </button>
+            </div>
+
+            <div id="modUsersList" class="flex-1 overflow-y-auto space-y-2 pr-1 min-h-[200px] max-h-[50vh]">
+                <!-- Lista de usuarios se carga aquí -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICACIONES -->
+    <div id="toastNotification" class="fixed bottom-6 right-6 left-6 sm:left-auto z-50 glass-panel border border-neon-cyan/50 text-white px-6 py-4 rounded-2xl shadow-glow-cyan translate-y-32 opacity-0 transition-all duration-500 flex items-center gap-4">
+        <div class="w-8 h-8 rounded-xl bg-neon-cyan/20 border border-neon-cyan/50 flex items-center justify-center text-neon-cyan text-sm shrink-0">
+            <i class="fa-solid fa-bell"></i>
+        </div>
+        <div>
+            <h5 id="toastTitle" class="text-xs font-black uppercase text-neon-cyan tracking-wider">Notificación</h5>
+            <p id="toastDesc" class="text-xs text-slate-300 mt-0.5">Mensaje del sistema.</p>
+        </div>
+    </div>
+
+    <!-- SCRIPT PRINCIPAL -->
+    <script>
+        // FIREBASE SETUP
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOfsLmQCpxgEiiBrPXcp3HhWuxpi5KwYI",
+            authDomain: "arcadeindie-d0331.firebaseapp.com",
+            projectId: "arcadeindie-d0331",
+            storageBucket: "arcadeindie-d0331.firebasestorage.app",
+            messagingSenderId: "781833533677",
+            appId: "1:781833533677:web:d692d052839cfe324434e4",
+            measurementId: "G-X3MSTEZLBV"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // ESTADO GLOBAL
+        let currentUser = null;
+        let userSkins = ['default'];
+        let isModerator = false; // true si tiene Admin === "moderador" o es la cuenta oficial
+        let allGames = [];
+        let currentCategory = 'todos';
+        let searchQuery = '';
+        let currentGameId = null;
+        let loadedGameSource = null; // Evita reinicios innecesarios del juego
+        let currentSourceType = 'file';
+        let currentSeasonMode = 'normal'; // normal, halloween, navidad, reyes
+        let eventsGameLoop = null;
+        let userBanListener = null; // Listener en tiempo real para detectar baneo
+        let modUsersCache = []; // Cache de usuarios para la bandeja de moderación
+
+        // JUEGO BASE PERMANENTE: EVENTS
+        const EVENTS_GAME = {
+            id: 'events_game_permanent',
+            title: 'Events',
+            category: 'arcade',
+            author: 'ArcadeIndieOficcial',
+            desc: 'Servidor multijugador interactivo con muñequitos Pixel Art. Camina junto a otros jugadores en tiempo real y recibe atuendos exclusivos en eventos especiales de la red.',
+            imageUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=800&q=80',
+            gradient: 'from-orange-600 to-purple-900',
+            likes: ['GamerPro', 'Vicmax', 'ArcadeFan'],
+            isEventsEngine: true
+        };
+
+        // JUEGOS DE MUESTRA DEL CATÁLOGO
+        const SAMPLE_GAMES = [
+            EVENTS_GAME,
+            {
+                id: 'sample_1',
+                title: 'NEON CYBER RUNNER 2099',
+                category: 'accion',
+                author: 'ArcadeIndieOficcial',
+                desc: 'Esquiva obstáculos cibernéticos a velocidad luz en un entorno sintético tridimensional.',
+                imageUrl: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80',
+                gradient: 'from-pink-600 to-rose-900',
+                likes: ['GamerPro', 'Vicmax'],
+                gameUrl: 'https://playcanv.as/p/2O2we2vT/'
+            },
+            {
+                id: 'sample_3',
+                title: 'QUANTUM PUZZLE SOLVER',
+                category: 'puzzle',
+                author: 'ArcadeIndieOficcial',
+                desc: 'Resuelve acertijos cuánticos manipulando portales de energía y bloques multidimensionales.',
+                imageUrl: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+                gradient: 'from-cyan-500 to-blue-900',
+                likes: ['StarPlayer'],
+                gameUrl: 'https://playcanv.as/p/2O2we2vT/'
+            },
+            {
+                id: 'sample_4',
+                title: 'TURBO HIGHWAY RIVAL',
+                category: 'carreras',
+                author: 'ArcadeIndieOficcial',
+                desc: 'Carreras callejeras a máxima velocidad con física hiperrealista y nitro sin límites.',
+                imageUrl: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80',
+                gradient: 'from-emerald-500 to-teal-900',
+                likes: ['NitroKing'],
+                gameUrl: 'https://playcanv.as/p/2O2we2vT/'
+            }
+        ];
+
+        // JUEGOS ESPECIALES DE TEMPORADA -> TODOS UTILIZAN EL MOTOR 'EVENTS'
+        const SEASONAL_SPECIAL_GAMES = {
+            halloween: {
+                ...EVENTS_GAME,
+                id: 'events_game_permanent',
+                title: '🎃 EVENTS: HALLOWEEN EDITION',
+                desc: '¡Edición Especial de Halloween! Entra al servidor multijugador, cuenta regresiva activa para el 31 de Octubre con regalito de atuendo bonito para tu usuario.',
+                imageUrl: 'https://images.unsplash.com/photo-1508361001413-7a9dca21d08a?auto=format&fit=crop&w=800&q=80'
+            },
+            navidad: {
+                ...EVENTS_GAME,
+                id: 'events_game_permanent',
+                title: '🎄 EVENTS: SANTA EDITION',
+                desc: '¡Edición Especial Navideña! Entra a la plaza multijugador pixel art de fin de año con toda la comunidad.',
+                imageUrl: 'https://images.unsplash.com/photo-1512389142860-9c449e58a543?auto=format&fit=crop&w=800&q=80'
+            },
+            reyes: {
+                ...EVENTS_GAME,
+                id: 'events_game_permanent',
+                title: '👑 EVENTS: REYES MAGOS',
+                desc: '¡Edición Especial de Reyes! Servidor multijugador abierto para reunirte con todos los jugadores.',
+                imageUrl: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80'
+            }
+        };
+
+        // DETECCIÓN Y CONFIGURACIÓN DE FESTIVIDADES
+        function checkSeasonalEvents() {
+            const now = new Date();
+            const month = now.getMonth(); // 0 = Enero, 9 = Octubre, 11 = Diciembre
+            const day = now.getDate();
+
+            const logoIcon = document.getElementById('logoIcon');
+            const logoBadge = document.getElementById('logoBadge');
+            const seasonBadge = document.getElementById('seasonBadge');
+            const heroBadge = document.getElementById('heroBadge');
+            const glow1 = document.getElementById('ambientGlow1');
+            const glow2 = document.getElementById('ambientGlow2');
+
+            if (month === 9) { // Octubre - Halloween
+                currentSeasonMode = 'halloween';
+                document.body.classList.add('theme-halloween');
+                if (logoIcon) logoIcon.className = "fa-solid fa-ghost text-dark-950 text-2xl group-hover:rotate-12 transition-transform";
+                if (logoBadge) logoBadge.className = "relative w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-500 via-purple-600 to-amber-500 flex items-center justify-center shadow-glow-orange group-hover:scale-105 transition-all duration-300";
+                if (seasonBadge) {
+                    seasonBadge.textContent = "HALLOWEEN";
+                    seasonBadge.className = "px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-orange-500/20 text-orange-400 border border-orange-500/40";
+                }
+                if (heroBadge) {
+                    heroBadge.textContent = "🎃 HALLOWEEN SPECIAL";
+                    heroBadge.className = "px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-gradient-to-r from-orange-500 to-purple-600 text-dark-950 shadow-glow-orange";
+                }
+                if (glow1) glow1.className = "fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-orange-500/15 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse-glow";
+                if (glow2) glow2.className = "fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse-glow";
+
+            } else if (month === 11) { // Diciembre - Navidad
+                currentSeasonMode = 'navidad';
+                document.body.classList.add('theme-navidad');
+                if (logoIcon) logoIcon.className = "fa-solid fa-snowflake text-dark-950 text-2xl group-hover:rotate-12 transition-transform";
+                if (logoBadge) logoBadge.className = "relative w-11 h-11 rounded-2xl bg-gradient-to-tr from-red-600 via-emerald-500 to-slate-100 flex items-center justify-center shadow-glow-green group-hover:scale-105 transition-all duration-300";
+                if (seasonBadge) {
+                    seasonBadge.textContent = "NAVIDAD";
+                    seasonBadge.className = "px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/40";
+                }
+                if (heroBadge) {
+                    heroBadge.textContent = "🎄 EDICIÓN NAVIDAD";
+                    heroBadge.className = "px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-gradient-to-r from-red-500 to-emerald-500 text-white shadow-glow-green";
+                }
+                if (glow1) glow1.className = "fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-red-600/15 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse-glow";
+                if (glow2) glow2.className = "fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-500/15 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse-glow";
+
+            } else if (month === 0 && day <= 8) { // 1 al 8 de Enero - Reyes Magos
+                currentSeasonMode = 'reyes';
+                document.body.classList.add('theme-reyes');
+                if (logoIcon) logoIcon.className = "fa-solid fa-crown text-dark-950 text-2xl group-hover:rotate-12 transition-transform";
+                if (logoBadge) logoBadge.className = "relative w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-purple-600 to-yellow-300 flex items-center justify-center shadow-glow-purple group-hover:scale-105 transition-all duration-300";
+                if (seasonBadge) {
+                    seasonBadge.textContent = "REYES MAGOS";
+                    seasonBadge.className = "px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40";
+                }
+                if (heroBadge) {
+                    heroBadge.textContent = "👑 REYES MAGOS";
+                    heroBadge.className = "px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-gradient-to-r from-amber-400 to-purple-600 text-dark-950 shadow-glow-purple";
+                }
+                if (glow1) glow1.className = "fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-500/15 rounded-full blur-[140px] pointer-events-none z-0 animate-pulse-glow";
+                if (glow2) glow2.className = "fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[160px] pointer-events-none z-0 animate-pulse-glow";
+            } else {
+                currentSeasonMode = 'normal';
+            }
+        }
+
+        // SFX AUDIO CON WEB AUDIO API
+        let audioCtx;
+        function playSfx(type) {
+            try {
+                if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.08);
+                    osc.start(now); osc.stop(now + 0.08);
+                } else if (type === 'like') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.linearRampToValueAtTime(0, now + 0.15);
+                    osc.start(now); osc.stop(now + 0.15);
+                }
+            } catch(e) { console.log(e); }
+        }
+
+        // CANVAS ANIMADO CON EFECTOS TEMPORALES
+        function initBgCanvas() {
+            const canvas = document.getElementById('bgCanvas');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
+
+            const particleCount = currentSeasonMode === 'navidad' ? 75 : 45;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 2 + 1,
+                    vx: currentSeasonMode === 'navidad' ? (Math.random() - 0.5) * 0.5 : (Math.random() - 0.5) * 0.4,
+                    vy: currentSeasonMode === 'navidad' ? Math.random() * 1.5 + 0.5 : (Math.random() - 0.5) * 0.4,
+                    color: getSeasonParticleColor()
+                });
+            }
+
+            function getSeasonParticleColor() {
+                if (currentSeasonMode === 'halloween') {
+                    return Math.random() > 0.5 ? '#ff7700' : '#a855f7';
+                } else if (currentSeasonMode === 'navidad') {
+                    return Math.random() > 0.4 ? '#ffffff' : (Math.random() > 0.5 ? '#ef4444' : '#10b981');
+                } else if (currentSeasonMode === 'reyes') {
+                    return Math.random() > 0.5 ? '#eab308' : '#c084fc';
+                }
+                return Math.random() > 0.5 ? '#00f2fe' : '#c084fc';
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+                ctx.lineWidth = 1;
+                const gridSize = 60;
+                for (let x = 0; x < width; x += gridSize) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+                }
+                for (let y = 0; y < height; y += gridSize) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+                }
+
+                particles.forEach((p, index) => {
+                    p.x += p.vx; p.y += p.vy;
+
+                    if (currentSeasonMode === 'navidad') {
+                        if (p.y > height) { p.y = -10; p.x = Math.random() * width; }
+                        if (p.x < 0 || p.x > width) p.x = Math.random() * width;
+                    } else {
+                        if (p.x < 0 || p.x > width) p.vx *= -1;
+                        if (p.y < 0 || p.y > height) p.vy *= -1;
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+
+                    if (currentSeasonMode !== 'navidad') {
+                        for (let j = index + 1; j < particles.length; j++) {
+                            const p2 = particles[j];
+                            const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                            if (dist < 120) {
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.strokeStyle = `rgba(255, 255, 255, ${0.12 * (1 - dist / 120)})`;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        window.onload = function() {
+            checkSeasonalEvents();
+            initBgCanvas();
+            checkAuth();
+            loadCloudGames();
+        };
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => console.error(err));
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function toggleGameFullScreen() {
+            const container = document.getElementById('youtubePlayerContainer');
+            if (!document.fullscreenElement) {
+                container.requestFullscreen().catch(err => console.error(err));
+            } else {
+                if (document.exitFullscreen) document.exitFullscreen();
+            }
+        }
+
+        function reloadGamePlayer() {
+            if (currentGameId) {
+                loadedGameSource = null; // Forzar recarga del iframe
+                renderWatchDetails(currentGameId);
+                showToast("REINICIADO", "El streaming del juego se ha recargado.");
+            }
+        }
+
+        // Cierra el listener de baneo si existe
+        function stopUserBanListener() {
+            if (userBanListener) {
+                userBanListener();
+                userBanListener = null;
+            }
+        }
+
+        // Activa listener en tiempo real: si el documento del usuario se borra → baneo + expulsión inmediata
+        function startUserBanListener(username) {
+            stopUserBanListener();
+            if (!username || username === 'ArcadeIndieOficcial') return;
+
+            userBanListener = db.collection("arcade_users").doc(username).onSnapshot(
+                (doc) => {
+                    if (!doc.exists) {
+                        // Documento eliminado → Baneo permanente en tiempo real
+                        forceBanLogout(username);
+                    } else {
+                        const data = doc.data();
+                        if (data.skins) userSkins = data.skins;
+                        // Actualizar rol de moderador en vivo
+                        const wasMod = isModerator;
+                        isModerator = (data.Admin === 'moderador' || data.Admin === 'Moderador' || data.admin === 'moderador');
+                        if (wasMod !== isModerator) {
+                            updateModButton();
+                            // Actualizar icono del header
+                            const icon = document.querySelector('#userSection .fa-solid');
+                            if (icon) {
+                                icon.className = isModerator 
+                                    ? 'fa-solid fa-user-shield text-rose-400' 
+                                    : 'fa-solid fa-user-astronaut text-neon-purple';
+                            }
+                        }
+                    }
+                },
+                (error) => {
+                    console.error("Error en listener de ban:", error);
+                }
+            );
+        }
+
+        // Expulsa al usuario de forma forzada y muestra el cartel de baneo
+        function forceBanLogout(username) {
+            stopUserBanListener();
+            localStorage.removeItem('arcade_session_user');
+            currentUser = null;
+            userSkins = ['default'];
+            isModerator = false;
+
+            const btnUploadNav = document.getElementById('btnUploadNav');
+            const btnModNav = document.getElementById('btnModNav');
+            if (btnUploadNav) btnUploadNav.classList.add('hidden');
+            if (btnModNav) btnModNav.classList.add('hidden');
+
+            document.getElementById('userSection').innerHTML = `
+                <button onclick="playSfx('click'); openAuthModal()" class="px-4 py-2 rounded-2xl bg-dark-800/80 border border-white/10 text-xs font-bold text-neon-cyan hover:bg-dark-700 hover:border-neon-cyan/50 hover:shadow-glow-cyan flex items-center gap-2 transition-all duration-300">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                    <span class="hidden sm:inline">Iniciar Sesión</span>
+                </button>
+            `;
+
+            // Si estaba jugando, volver al catálogo
+            if (currentGameId) {
+                goHome();
+            }
+
+            showBanModal(username);
+            renderGames();
+        }
+
+        function updateModButton() {
+            const btnModNav = document.getElementById('btnModNav');
+            if (btnModNav) {
+                if (isModerator) btnModNav.classList.remove('hidden');
+                else btnModNav.classList.add('hidden');
+            }
+        }
+
+        async function checkAuth() {
+            const loggedUser = localStorage.getItem('arcade_session_user');
+            const btnUploadNav = document.getElementById('btnUploadNav');
+            const btnModNav = document.getElementById('btnModNav');
+
+            // Siempre detener listener anterior al re-chequear
+            stopUserBanListener();
+            isModerator = false;
+
+            if(loggedUser) {
+                // Cuenta oficial: no depende de documento en Firebase + tiene poderes de moderación
+                if(loggedUser === 'ArcadeIndieOficcial') {
+                    currentUser = loggedUser;
+                    isModerator = true;
+                    btnUploadNav.classList.remove('hidden');
+                    userSkins = ['default'];
+                    try {
+                        const doc = await db.collection("arcade_users").doc(currentUser).get();
+                        if(doc.exists && doc.data().skins) {
+                            userSkins = doc.data().skins;
+                        }
+                    } catch(e) { console.error(e); }
+
+                    document.getElementById('userSection').innerHTML = `
+                        <div class="flex items-center gap-2 glass-panel px-3.5 py-2 rounded-2xl border border-white/10 text-xs">
+                            <i class="fa-solid fa-user-shield text-neon-cyan"></i>
+                            <span class="font-extrabold text-white max-w-[90px] truncate">${currentUser}</span>
+                            <button onclick="playSfx('click'); handleLogout()" class="ml-2 text-rose-400 hover:text-rose-300 font-bold">Salir</button>
+                        </div>
+                    `;
+                    updateModButton();
+                } else {
+                    // Usuarios normales: verificar existencia + activar listener en tiempo real
+                    try {
+                        const doc = await db.collection("arcade_users").doc(loggedUser).get();
+                        if(!doc.exists) {
+                            // Ya está borrado → ban inmediato
+                            forceBanLogout(loggedUser);
+                            return;
+                        }
+
+                        // Usuario válido → activar listener de ban en tiempo real
+                        currentUser = loggedUser;
+                        btnUploadNav.classList.add('hidden');
+                        const data = doc.data();
+                        userSkins = (data.skins) ? data.skins : ['default'];
+
+                        // Verificar si es moderador (campo Admin === "moderador")
+                        isModerator = (data.Admin === 'moderador' || data.Admin === 'Moderador' || data.admin === 'moderador');
+
+                        document.getElementById('userSection').innerHTML = `
+                            <div class="flex items-center gap-2 glass-panel px-3.5 py-2 rounded-2xl border border-white/10 text-xs">
+                                <i class="fa-solid ${isModerator ? 'fa-user-shield text-rose-400' : 'fa-user-astronaut text-neon-purple'}"></i>
+                                <span class="font-extrabold text-white max-w-[90px] truncate">${currentUser}</span>
+                                <button onclick="playSfx('click'); handleLogout()" class="ml-2 text-rose-400 hover:text-rose-300 font-bold">Salir</button>
+                            </div>
+                        `;
+
+                        updateModButton();
+
+                        // Escucha en tiempo real: si el admin borra el documento → expulsión inmediata
+                        startUserBanListener(loggedUser);
+
+                    } catch(e) {
+                        console.error(e);
+                        // Error de red: mantener sesión temporalmente (sin listener)
+                        currentUser = loggedUser;
+                        btnUploadNav.classList.add('hidden');
+                        isModerator = false;
+                        updateModButton();
+                        document.getElementById('userSection').innerHTML = `
+                            <div class="flex items-center gap-2 glass-panel px-3.5 py-2 rounded-2xl border border-white/10 text-xs">
+                                <i class="fa-solid fa-user-astronaut text-neon-purple"></i>
+                                <span class="font-extrabold text-white max-w-[90px] truncate">${currentUser}</span>
+                                <button onclick="playSfx('click'); handleLogout()" class="ml-2 text-rose-400 hover:text-rose-300 font-bold">Salir</button>
+                            </div>
+                        `;
+                    }
+                }
+            } else {
+                currentUser = null;
+                userSkins = ['default'];
+                isModerator = false;
+                btnUploadNav.classList.add('hidden');
+                updateModButton();
+                document.getElementById('userSection').innerHTML = `
+                    <button onclick="playSfx('click'); openAuthModal()" class="px-4 py-2 rounded-2xl bg-dark-800/80 border border-white/10 text-xs font-bold text-neon-cyan hover:bg-dark-700 hover:border-neon-cyan/50 hover:shadow-glow-cyan flex items-center gap-2 transition-all duration-300">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                        <span class="hidden sm:inline">Iniciar Sesión</span>
+                    </button>
+                `;
+            }
+            renderGames();
+        }
+
+        // Modal de baneo permanente
+        function showBanModal(username) {
+            // Crear modal si no existe
+            let banModal = document.getElementById('banModal');
+            if (!banModal) {
+                banModal = document.createElement('div');
+                banModal.id = 'banModal';
+                banModal.className = 'fixed inset-0 z-[60] bg-dark-950/90 backdrop-blur-xl flex items-center justify-center p-4';
+                banModal.innerHTML = `
+                    <div class="glass-panel border border-rose-500/60 rounded-3xl max-w-md w-full p-8 shadow-2xl relative text-center">
+                        <div class="w-20 h-20 mx-auto mb-5 rounded-full bg-rose-500/20 border-2 border-rose-500 flex items-center justify-center">
+                            <i class="fa-solid fa-ban text-4xl text-rose-400"></i>
+                        </div>
+                        <h3 class="font-display text-2xl font-black text-white mb-2">⛔ BANEO PERMANENTE</h3>
+                        <p class="text-sm text-slate-300 mb-1">La cuenta <span class="font-bold text-rose-400" id="banUsername"></span> ha sido eliminada de la red ArcadeIndie.</p>
+                        <p class="text-xs text-slate-400 mb-6">Tu sesión ha sido cerrada automáticamente. No podrás volver a iniciar sesión con esta cuenta.</p>
+                        <button onclick="playSfx('click'); closeBanModal()" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-800 text-white font-black text-sm shadow-lg hover:scale-[1.02] transition-all">
+                            Entendido
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(banModal);
+            }
+            document.getElementById('banUsername').textContent = username;
+            banModal.classList.remove('hidden');
+            // También mostrar toast de refuerzo
+            showToast('⛔ BANEADO PERMANENTEMENTE', 'Tu cuenta fue eliminada. Sesión cerrada.');
+        }
+
+        function closeBanModal() {
+            const banModal = document.getElementById('banModal');
+            if (banModal) banModal.classList.add('hidden');
+        }
+
+        // ========== BANDEJA DE MODERACIÓN ==========
+        function openModerationPanel() {
+            if (!isModerator) {
+                return showToast('ACCESO DENEGADO', 'Se requiere rol de moderador');
+            }
+            document.getElementById('moderationModal').classList.remove('hidden');
+            document.getElementById('modSearchInput').value = '';
+            loadModerationUsers();
+        }
+
+        function closeModerationPanel() {
+            document.getElementById('moderationModal').classList.add('hidden');
+        }
+
+        async function loadModerationUsers() {
+            const list = document.getElementById('modUsersList');
+            const countEl = document.getElementById('modUserCount');
+            if (!list) return;
+
+            list.innerHTML = `<div class="text-center py-10 text-slate-500"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><p class="text-xs">Cargando usuarios...</p></div>`;
+            countEl.textContent = 'Cargando...';
+
+            try {
+                const snapshot = await db.collection("arcade_users").get();
+                modUsersCache = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    modUsersCache.push({
+                        id: doc.id,
+                        username: data.username || doc.id,
+                        Admin: data.Admin || data.admin || null,
+                        skins: data.skins || [],
+                        createdAt: data.createdAt || null
+                    });
+                });
+
+                // Ordenar alfabéticamente
+                modUsersCache.sort((a, b) => a.username.localeCompare(b.username));
+                renderModUsersList(modUsersCache);
+            } catch (e) {
+                console.error(e);
+                list.innerHTML = `<div class="text-center py-10 text-rose-400 text-xs">Error al cargar usuarios. Revisa permisos de Firebase.</div>`;
+                countEl.textContent = 'Error';
+            }
+        }
+
+        function renderModUsersList(users) {
+            const list = document.getElementById('modUsersList');
+            const countEl = document.getElementById('modUserCount');
+            if (!list) return;
+
+            if (users.length === 0) {
+                list.innerHTML = `<div class="text-center py-10 text-slate-500 text-xs">No se encontraron usuarios.</div>`;
+                countEl.textContent = '0 usuarios';
+                return;
+            }
+
+            countEl.textContent = `${users.length} usuario${users.length !== 1 ? 's' : ''}`;
+            list.innerHTML = '';
+
+            users.forEach(u => {
+                const isSelf = u.username === currentUser || u.id === currentUser;
+                const isOfficial = u.username === 'ArcadeIndieOficcial' || u.id === 'ArcadeIndieOficcial';
+                const isMod = (u.Admin === 'moderador' || u.Admin === 'Moderador');
+                const canBan = !isSelf && !isOfficial;
+
+                const card = document.createElement('div');
+                card.className = 'flex items-center justify-between gap-3 p-3 glass-panel rounded-2xl border border-white/10 hover:border-rose-500/30 transition-all';
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr ${isMod ? 'from-rose-500 to-orange-500' : 'from-neon-purple to-neon-blue'} flex items-center justify-center text-dark-950 font-black text-sm shrink-0">
+                            ${(u.username || 'U')[0].toUpperCase()}
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-white text-sm truncate">${u.username}</span>
+                                ${isMod ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-rose-500/20 text-rose-400 border border-rose-500/40">MOD</span>' : ''}
+                                ${isOfficial ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/40">OFICIAL</span>' : ''}
+                                ${isSelf ? '<span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">TÚ</span>' : ''}
+                            </div>
+                            <span class="text-[10px] text-slate-400">${u.createdAt ? 'Registrado: ' + new Date(u.createdAt).toLocaleDateString() : 'Sin fecha'}</span>
+                        </div>
+                    </div>
+                    <div class="shrink-0">
+                        ${canBan ? `
+                            <button onclick="playSfx('click'); banUserFromMod('${u.id}', '${u.username}')" class="px-3 py-2 rounded-xl bg-rose-500/20 border border-rose-500/50 text-rose-400 hover:bg-rose-500 hover:text-white text-xs font-bold transition-all flex items-center gap-1.5">
+                                <i class="fa-solid fa-ban"></i> Banear
+                            </button>
+                        ` : `
+                            <span class="text-[10px] text-slate-500 font-bold px-2">No baneable</span>
+                        `}
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function filterModUsers(query) {
+            const q = (query || '').toLowerCase().trim();
+            if (!q) {
+                renderModUsersList(modUsersCache);
+                return;
+            }
+            const filtered = modUsersCache.filter(u => 
+                u.username.toLowerCase().includes(q) || (u.id && u.id.toLowerCase().includes(q))
+            );
+            renderModUsersList(filtered);
+        }
+
+        async function banUserFromMod(userId, username) {
+            if (!isModerator) return showToast('ACCESO DENEGADO', 'Se requiere rol de moderador');
+            if (userId === currentUser || username === currentUser) return showToast('Error', 'No puedes banearte a ti mismo');
+            if (username === 'ArcadeIndieOficcial' || userId === 'ArcadeIndieOficcial') return showToast('Error', 'No se puede banear la cuenta oficial');
+
+            if (!confirm(`¿Confirmas el BANEO PERMANENTE de "${username}"?\n\nEsto eliminará su cuenta de Firebase y lo expulsará de la red de inmediato.`)) return;
+
+            try {
+                await db.collection("arcade_users").doc(userId).delete();
+                showToast('⛔ USUARIO BANEADO', `${username} ha sido eliminado permanentemente.`);
+                // Quitar de la lista local y refrescar
+                modUsersCache = modUsersCache.filter(u => u.id !== userId);
+                renderModUsersList(modUsersCache);
+            } catch (e) {
+                console.error(e);
+                showToast('Error', 'No se pudo banear al usuario. Revisa permisos de Firebase.');
+            }
+        }
+        // ========== FIN MODERACIÓN ==========
+
+        function toggleAuthMode(mode) {
+            document.getElementById('registerForm').classList.toggle('hidden', mode === 'login');
+            document.getElementById('loginForm').classList.toggle('hidden', mode === 'register');
+        }
+        function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); }
+        function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); }
+
+        async function handleRegister() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            if(!username || !password) return showToast('Error', 'Completa todos los campos');
+            
+            try {
+                const userRef = db.collection("arcade_users").doc(username);
+                const doc = await userRef.get();
+                if(doc.exists) return showToast('Error', 'El nombre de usuario ya existe');
+
+                await userRef.set({ username, password, skins: ['default'], createdAt: new Date().toISOString() });
+                localStorage.setItem('arcade_session_user', username);
+                showToast('¡ÉXITO!', 'Perfil registrado en la red cloud');
+                closeAuthModal(); 
+                checkAuth();
+            } catch (error) {
+                console.error(error);
+                showToast('Error', 'No se pudo registrar el usuario');
+            }
+        }
+
+        async function handleLogin() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if(username === 'ArcadeIndieOficcial' && password === 'Vicmax') {
+                localStorage.setItem('arcade_session_user', 'ArcadeIndieOficcial');
+                showToast('BIENVENIDO', 'Sesión oficial autenticada');
+                closeAuthModal(); checkAuth(); return;
+            }
+
+            try {
+                const userRef = db.collection("arcade_users").doc(username);
+                const doc = await userRef.get();
+                if(!doc.exists || doc.data().password !== password) {
+                    return showToast('Error', 'Credenciales inválidas');
+                }
+
+                localStorage.setItem('arcade_session_user', username);
+                showToast('BIENVENIDO', `Sesión iniciada como ${username}`);
+                closeAuthModal(); 
+                checkAuth();
+            } catch (error) {
+                console.error(error);
+                showToast('Error', 'Fallo al conectar con el servidor');
+            }
+        }
+
+        function handleLogout() {
+            stopUserBanListener();
+            localStorage.removeItem('arcade_session_user');
+            isModerator = false;
+            checkAuth();
+            showToast('SESIÓN CERRADA', 'Has salido de la red');
+        }
+
+        function loadCloudGames() {
+            db.collection("arcade_custom_games").onSnapshot(snapshot => {
+                const dbGames = [];
+                snapshot.forEach(doc => dbGames.push({ id: doc.id, ...doc.data() }));
+
+                let baseList = dbGames.length > 0 ? dbGames : [...SAMPLE_GAMES];
+                
+                // GARANTIZAR QUE 'EVENTS' SIEMPRE ESTÉ INCLUIDO Y LÍDER
+                let eventGameItem = EVENTS_GAME;
+                if (currentSeasonMode !== 'normal' && SEASONAL_SPECIAL_GAMES[currentSeasonMode]) {
+                    eventGameItem = SEASONAL_SPECIAL_GAMES[currentSeasonMode];
+                }
+
+                let filtered = baseList.filter(g => g.id !== EVENTS_GAME.id);
+                allGames = [eventGameItem, ...filtered];
+                
+                renderGames();
+                updateHeroShowcase();
+                updateCategoryCounts();
+                
+                if(currentGameId === EVENTS_GAME.id) renderWatchDetails(EVENTS_GAME.id);
+            });
+        }
+
+        function updateHeroShowcase() {
+            if (allGames.length === 0) return;
+            const featured = allGames[0];
+            document.getElementById('heroTitle').textContent = featured.title;
+            document.getElementById('heroDesc').textContent = featured.desc || 'Disfruta del título más popular cargado en la plataforma.';
+            if(featured.imageUrl) {
+                document.getElementById('heroBgImage').style.backgroundImage = `url('${featured.imageUrl}')`;
+            }
+            document.getElementById('heroPlayBtn').onclick = () => playAsYouTube(featured.id);
+        }
+
+        function scrollToCatalog() {
+            document.getElementById('catalogSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderGames() {
+            const grid = document.getElementById('gamesGrid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            
+            let filtered = allGames.filter(g => {
+                const matchesCat = currentCategory === 'todos' || g.category === currentCategory;
+                const matchesSearch = g.title.toLowerCase().includes(searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-20 text-center text-slate-500 glass-panel rounded-3xl border border-white/10">
+                        <i class="fa-solid fa-gamepad text-6xl mb-4 text-slate-600 block animate-bounce"></i>
+                        <p class="text-sm font-bold">No se encontraron juegos en esta categoría.</p>
+                    </div>
+                `;
+            } else {
+                filtered.forEach(game => {
+                    const likes = game.likes || [];
+                    const likesCount = likes.length;
+                    const hasLiked = currentUser && likes.includes(currentUser);
+                    const isOwner = currentUser === 'ArcadeIndieOficcial' && !game.isEventsEngine;
+
+                    const card = document.createElement('div');
+                    card.className = "glass-panel rounded-3xl overflow-hidden flex flex-col justify-between relative group transition-all duration-500 hover:-translate-y-2 hover:shadow-card-hover border border-white/10 hover:border-neon-cyan/50 shimmer-border";
+
+                    const thumbStyle = game.imageUrl ? `background-image: url('${game.imageUrl}'); background-size: cover; background-position: center;` : '';
+
+                    card.innerHTML = `
+                        <div class="relative h-44 bg-gradient-to-br ${game.gradient || 'from-purple-600 to-indigo-900'} p-4 flex flex-col justify-between overflow-hidden" style="${thumbStyle}">
+                            <div class="absolute inset-0 bg-dark-950/30 group-hover:bg-dark-950/10 transition-colors"></div>
+                            
+                            <div class="flex justify-between items-center z-10">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-dark-950/80 text-neon-cyan border border-neon-cyan/30 backdrop-blur-md">
+                                    ${game.category}
+                                </span>
+                                <div class="flex items-center gap-2">
+                                    ${isOwner ? `
+                                        <button onclick="playSfx('click'); openEditModal('${game.id}')" class="w-8 h-8 rounded-full bg-neon-cyan text-dark-950 flex items-center justify-center text-xs shadow-md font-bold hover:scale-110 transition-transform"><i class="fa-solid fa-pen"></i></button>
+                                        <button onclick="playSfx('click'); deleteGame('${game.id}')" class="w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center text-xs shadow-md hover:scale-110 transition-transform"><i class="fa-solid fa-trash"></i></button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            
+                            <div class="z-10 text-[11px] font-bold text-white bg-dark-950/60 px-2.5 py-1 rounded-xl w-fit backdrop-blur-md border border-white/10 flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-astronaut text-neon-purple"></i> ${game.author || 'Anónimo'}
+                            </div>
+                        </div>
+
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div>
+                                <h3 class="font-display font-black text-white text-base mb-1 group-hover:text-neon-cyan transition-colors truncate tracking-wide">${game.title}</h3>
+                                <p class="text-xs text-slate-400 line-clamp-2 leading-relaxed">${game.desc || 'Experiencia web interactiva cloud de alta velocidad.'}</p>
+                            </div>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-white/10">
+                                <button onclick="playSfx('like'); toggleLike('${game.id}')" class="flex items-center gap-2 text-xs ${hasLiked ? 'text-rose-400 font-bold' : 'text-slate-400 hover:text-white'} transition-colors">
+                                    <i class="${hasLiked ? 'fa-solid' : 'fa-regular'} fa-heart text-sm"></i>
+                                    <span>${likesCount}</span>
+                                </button>
+                                <button onclick="playSfx('click'); playAsYouTube('${game.id}')" class="px-5 py-2 rounded-xl bg-gradient-to-r from-neon-cyan to-neon-blue text-dark-950 text-xs font-black uppercase tracking-wider shadow-glow-cyan hover:scale-105 transition-all">
+                                    JUGAR
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+            document.getElementById('gameCountIndicator').textContent = `${filtered.length} TÍTULOS DISPONIBLES`;
+        }
+
+        function playAsYouTube(id) {
+            currentGameId = id;
+            loadedGameSource = null; // Reinicia el indicador al cambiar de juego
+            document.getElementById('homeView').classList.add('hidden');
+            document.getElementById('watchView').classList.remove('hidden');
+            renderWatchDetails(id);
+            renderSidebarSuggestions(id);
+            loadReactions(id);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goHome() {
+            if (eventsGameLoop) clearInterval(eventsGameLoop);
+            currentGameId = null;
+            loadedGameSource = null;
+            document.getElementById('watchView').classList.add('hidden');
+            document.getElementById('homeView').classList.remove('hidden');
+            const container = document.getElementById('youtubePlayerContainer');
+            container.innerHTML = `
+                <div class="absolute top-4 right-4 z-20 flex items-center gap-2 opacity-90 group-hover:opacity-100 transition-opacity">
+                    <button onclick="playSfx('click'); reloadGamePlayer()" title="Reiniciar Juego" class="w-10 h-10 rounded-2xl bg-dark-950/80 hover:bg-neon-blue text-white hover:text-dark-950 border border-white/20 backdrop-blur-xl flex items-center justify-center text-xs font-bold shadow-xl transition-all">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                    <button onclick="playSfx('click'); toggleGameFullScreen()" class="px-4 py-2.5 bg-gradient-to-r from-neon-cyan to-neon-blue text-dark-950 hover:scale-105 rounded-2xl text-xs font-black border border-white/30 backdrop-blur-xl flex items-center gap-2 shadow-glow-cyan transition-all">
+                        <i class="fa-solid fa-expand" id="gameFullscreenIcon"></i> <span>Pantalla Completa</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderWatchDetails(id) {
+            const game = allGames.find(g => g.id === id);
+            if(!game) return;
+
+            document.getElementById('watchTitle').textContent = game.title;
+            document.getElementById('watchAuthor').textContent = game.author || 'ArcadeIndieOficcial';
+            document.getElementById('authorAvatar').textContent = (game.author || 'A')[0];
+            document.getElementById('watchCategory').textContent = `Categoría: ${game.category}`;
+            document.getElementById('watchDate').textContent = `Publicado: ${new Date(game.createdAt || Date.now()).toLocaleDateString()}`;
+            document.getElementById('watchDesc').textContent = game.desc || 'Disfruta de este título optimizado para navegadores modernos.';
+
+            const likes = game.likes || [];
+            const hasLiked = currentUser && likes.includes(currentUser);
+            document.getElementById('watchLikesCount').textContent = likes.length;
+            document.getElementById('watchLikeIcon').className = hasLiked ? "fa-solid fa-heart text-rose-400 text-sm" : "fa-regular fa-heart text-sm text-rose-400";
+
+            const ownerActions = document.getElementById('ownerActionsWatch');
+            if(currentUser === 'ArcadeIndieOficcial' && !game.isEventsEngine) {
+                ownerActions.classList.remove('hidden');
+                document.getElementById('watchEditBtn').onclick = () => openEditModal(game.id);
+                document.getElementById('watchDeleteBtn').onclick = () => deleteGame(game.id);
+            } else {
+                ownerActions.classList.add('hidden');
+            }
+
+            const container = document.getElementById('youtubePlayerContainer');
+            
+            // SI ES EL JUEGO "EVENTS"
+            if (game.isEventsEngine) {
+                if (loadedGameSource === 'EVENTS_ENGINE') return;
+                loadedGameSource = 'EVENTS_ENGINE';
+                startEventsEngine(container);
+                return;
+            }
+
+            // PREVENIR REINICIO DEL IFRAME CUANDO YA ESTÁ EN EJECUCIÓN
+            const currentSourceKey = game.gameUrl || game.htmlContent;
+            if (loadedGameSource === currentSourceKey) return;
+            loadedGameSource = currentSourceKey;
+
+            if (eventsGameLoop) clearInterval(eventsGameLoop);
+
+            const oldWrapper = container.querySelector('.auto-scale-wrapper');
+            if(oldWrapper) oldWrapper.remove();
+
+            const wrapper = document.createElement('div');
+            wrapper.className = "auto-scale-wrapper";
+
+            const iframe = document.createElement('iframe');
+            if(game.gameUrl) iframe.src = game.gameUrl;
+            else if(game.htmlContent) iframe.srcdoc = game.htmlContent;
+            
+            wrapper.appendChild(iframe);
+            container.insertBefore(wrapper, container.firstChild);
+        }
+
+        // MOTOR DEL JUEGO MULTIJUGADOR "EVENTS"
+        function startEventsEngine(container) {
+            if (eventsGameLoop) clearInterval(eventsGameLoop);
+            
+            const oldWrapper = container.querySelector('.auto-scale-wrapper');
+            if(oldWrapper) oldWrapper.remove();
+
+            const canvas = document.createElement('canvas');
+            canvas.width = 900;
+            canvas.height = 500;
+            canvas.className = "w-full h-full object-contain bg-slate-950";
+            container.appendChild(canvas);
+
+            const ctx = canvas.getContext('2d');
+            const myPlayerId = currentUser || ('invitado_' + Math.floor(Math.random() * 8999 + 1000));
+            
+            let posX = Math.floor(Math.random() * 600 + 100);
+            let posY = Math.floor(Math.random() * 300 + 100);
+            let facing = 'right';
+            let isWalking = false;
+
+            let keys = {};
+            window.onkeydown = (e) => keys[e.key] = true;
+            window.onkeyup = (e) => keys[e.key] = false;
+
+            let otherPlayers = {};
+            db.collection("events_players").onSnapshot(snapshot => {
+                snapshot.forEach(doc => {
+                    if (doc.id !== myPlayerId) {
+                        otherPlayers[doc.id] = doc.data();
+                    }
+                });
+            });
+
+            function syncPosition() {
+                const hasHalloweenSuit = userSkins.includes('halloween_spooky_suit_2026');
+                db.collection("events_players").doc(myPlayerId).set({
+                    username: myPlayerId,
+                    x: posX,
+                    y: posY,
+                    facing: facing,
+                    isWalking: isWalking,
+                    suit: hasHalloweenSuit ? 'Halloween Spooky Suit' : 'Standard Pixel',
+                    lastActive: Date.now()
+                });
+            }
+
+            let grantedReward = false;
+
+            eventsGameLoop = setInterval(() => {
+                isWalking = false;
+                if (keys['ArrowLeft'] || keys['a'] || keys['A']) { posX -= 4; facing = 'left'; isWalking = true; }
+                if (keys['ArrowRight'] || keys['d'] || keys['D']) { posX += 4; facing = 'right'; isWalking = true; }
+                if (keys['ArrowUp'] || keys['w'] || keys['W']) { posY -= 4; isWalking = true; }
+                if (keys['ArrowDown'] || keys['s'] || keys['S']) { posY += 4; isWalking = true; }
+
+                posX = Math.max(20, Math.min(canvas.width - 20, posX));
+                posY = Math.max(20, Math.min(canvas.height - 40, posY));
+
+                if (Math.random() < 0.25) syncPosition();
+
+                // DIBUJAR ESCENA
+                ctx.fillStyle = '#0a0f1d';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Rejilla de Fondo
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < canvas.width; x += 40) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                }
+                for (let y = 0; y < canvas.height; y += 40) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+
+                // Detección de Fecha de Octubre
+                const now = new Date();
+                const currentMonth = now.getMonth(); // 9 = Octubre
+                const currentYear = now.getFullYear();
+                const halloweenTarget = new Date(currentYear, 9, 31, 0, 0, 0);
+                const isOctober = (currentMonth === 9);
+                const diff = halloweenTarget - now;
+
+                // MARCO DE INFORMACIÓN / CUENTA REGRESIVA
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+                ctx.fillRect(20, 20, canvas.width - 40, 60);
+                ctx.strokeStyle = isOctober ? '#ff7700' : '#00f2fe';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(20, 20, canvas.width - 40, 60);
+
+                ctx.font = '11px "Press Start 2P", monospace';
+                ctx.fillStyle = '#ff7700';
+                ctx.fillText("JUEGO DE EVENTOS: EVENTS MULTIPLAYER", 40, 45);
+
+                if (isOctober && diff > 0) {
+                    const h = Math.floor(diff / (1000 * 60 * 60));
+                    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((diff % (1000 * 60)) / 1000);
+                    ctx.fillStyle = '#00f2fe';
+                    ctx.fillText(`CUENTA REGRESIVA AL 31 OCT: ${h}h ${m}m ${s}s`, 40, 65);
+                } else if (isOctober || diff <= 0) {
+                    ctx.fillStyle = '#34d399';
+                    ctx.fillText("¡EVENTO DE HALLOWEEN ACTIVO! ATUENDO CONCEDIDO 🎉", 40, 65);
+                    if (!grantedReward) {
+                        grantedReward = true;
+                        grantHalloweenOutfit();
+                    }
+                } else {
+                    ctx.fillStyle = '#c084fc';
+                    ctx.fillText("SERVIDOR MULTIJUGADOR ACTIVO • CONÉCTATE CON OTROS", 40, 65);
+                }
+
+                // DIBUJAR JUGADORES CONECTADOS
+                Object.values(otherPlayers).forEach(p => {
+                    drawPixelCharacter(ctx, p.x, p.y, p.username, p.facing, p.isWalking, p.suit === 'Halloween Spooky Suit');
+                });
+
+                // DIBUJAR MI PERSONAJE
+                const hasSuit = userSkins.includes('halloween_spooky_suit_2026');
+                drawPixelCharacter(ctx, posX, posY, `${myPlayerId} (Tú)`, facing, isWalking, hasSuit);
+
+            }, 1000 / 30);
+        }
+
+        // RENDER PIXEL ART JUGADOR
+        function drawPixelCharacter(ctx, x, y, name, facing, walking, isHalloween) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Sombra
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
+            ctx.beginPath();
+            ctx.ellipse(0, 16, 12, 5, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            const bodyColor = isHalloween ? '#ff7700' : '#38bdf8';
+            const hatColor = isHalloween ? '#a855f7' : '#c084fc';
+
+            // Cabeza
+            ctx.fillStyle = '#fce7f3';
+            ctx.fillRect(-8, -16, 16, 14);
+
+            // Sombrero / Pelo
+            ctx.fillStyle = hatColor;
+            ctx.fillRect(-10, -22, 20, 6);
+            if (isHalloween) ctx.fillRect(-4, -28, 8, 6); // Sombrero especial
+
+            // Ojos
+            ctx.fillStyle = '#0f172a';
+            const eyeOffset = facing === 'left' ? -4 : 2;
+            ctx.fillRect(eyeOffset, -12, 3, 3);
+
+            // Cuerpo
+            ctx.fillStyle = bodyColor;
+            ctx.fillRect(-8, -2, 16, 14);
+
+            // Pies animados
+            ctx.fillStyle = '#0284c7';
+            let legOffset = walking ? Math.sin(Date.now() / 90) * 4 : 0;
+            ctx.fillRect(-7, 12 + legOffset, 5, 5);
+            ctx.fillRect(2, 12 - legOffset, 5, 5);
+
+            // Nombre de Usuario
+            ctx.font = '10px Outfit, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.textAlign = 'center';
+            ctx.fillText(name, 0, -32);
+
+            if (isHalloween) {
+                ctx.fillStyle = '#ff7700';
+                ctx.fillText("✨ Traje Halloween", 0, -43);
+            }
+
+            ctx.restore();
+        }
+
+        async function grantHalloweenOutfit() {
+            if (!currentUser) return showToast('EVENTO', 'Crea una cuenta para guardar el Atuendo de Halloween');
+            if (!userSkins.includes('halloween_spooky_suit_2026')) {
+                userSkins.push('halloween_spooky_suit_2026');
+                await db.collection("arcade_users").doc(currentUser).set({ skins: userSkins }, { merge: true });
+                showToast('🎁 ¡ATUENDO BONITO OBTENIDO!', 'Se guardó la recompensa de Halloween en tu cuenta ArcadeIndie.');
+            }
+        }
+
+        function renderSidebarSuggestions(currentId) {
+            const sidebar = document.getElementById('sidebarSuggestions');
+            if(!sidebar) return;
+            sidebar.innerHTML = '';
+            const suggestions = allGames.filter(g => g.id !== currentId);
+
+            if(suggestions.length === 0) {
+                sidebar.innerHTML = '<p class="text-xs text-slate-500 px-1">No hay más recomendaciones por ahora.</p>';
+                return;
+            }
+
+            suggestions.forEach(game => {
+                const item = document.createElement('div');
+                item.className = "flex gap-3 cursor-pointer group glass-panel p-3 rounded-2xl border border-white/10 hover:border-neon-cyan/50 transition-all shadow-md hover:scale-[1.02]";
+                item.onclick = () => { playSfx('click'); playAsYouTube(game.id); };
+                const thumbBg = game.imageUrl ? `background-image: url('${game.imageUrl}'); background-size: cover; background-position: center;` : '';
+
+                item.innerHTML = `
+                    <div class="w-28 aspect-video rounded-xl overflow-hidden shrink-0 bg-gradient-to-br ${game.gradient || 'from-purple-600 to-indigo-900'} shadow" style="${thumbBg}"></div>
+                    <div class="flex-1 min-w-0 flex flex-col justify-center">
+                        <h5 class="font-bold text-xs text-white truncate group-hover:text-neon-cyan transition-colors">${game.title}</h5>
+                        <span class="text-[11px] text-slate-400 truncate">${game.author || 'ArcadeIndie'}</span>
+                        <span class="text-[10px] text-neon-purple font-black mt-0.5">${(game.likes || []).length} ❤️</span>
+                    </div>
+                `;
+                sidebar.appendChild(item);
+            });
+        }
+
+        async function toggleLike(gameId) {
+            if(!currentUser) return showToast('ATENCIÓN', 'Inicia sesión para dar Me Gusta');
+            const gameRef = db.collection("arcade_custom_games").doc(gameId);
+            const doc = await gameRef.get();
+            if(doc.exists) {
+                let likes = doc.data().likes || [];
+                if(likes.includes(currentUser)) likes = likes.filter(u => u !== currentUser);
+                else likes.push(currentUser);
+                await gameRef.update({ likes: likes });
+            }
+        }
+
+        async function toggleLikeCurrentGame() {
+            if(!currentGameId) return;
+            await toggleLike(currentGameId);
+            renderWatchDetails(currentGameId);
+        }
+
+        function loadReactions(gameId) {
+            db.collection("arcade_custom_games").doc(gameId).collection("reactions").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+                const list = document.getElementById('reactionsList');
+                if(!list) return;
+                list.innerHTML = '';
+                let reactions = [];
+                snapshot.forEach(doc => reactions.push(doc.data()));
+                document.getElementById('reactionsCount').textContent = reactions.length;
+
+                if(reactions.length === 0) {
+                    list.innerHTML = '<p class="text-xs text-slate-500 py-1">Sé el primero en calificar este título.</p>';
+                    return;
+                }
+
+                reactions.forEach(r => {
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between text-xs glass-panel px-4 py-2.5 rounded-xl border border-white/10";
+                    div.innerHTML = `
+                        <span class="font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user-astronaut text-neon-purple"></i> ${r.user}</span>
+                        <span class="text-neon-cyan font-bold bg-neon-cyan/10 px-2.5 py-1 rounded-lg border border-neon-cyan/30">${r.reaction}</span>
+                    `;
+                    list.appendChild(div);
+                });
+            });
+        }
+
+        async function sendQuickReaction(reactionText) {
+            if(!currentUser) return showToast('ATENCIÓN', 'Inicia sesión para reaccionar');
+            await db.collection("arcade_custom_games").doc(currentGameId).collection("reactions").add({
+                user: currentUser,
+                reaction: reactionText,
+                createdAt: new Date().toISOString()
+            });
+            showToast('REGISTRADO', 'Tu valoración rápida fue enviada');
+        }
+
+        function openUploaderModal() {
+            if(currentUser !== 'ArcadeIndieOficcial') return showToast('ACCESO DENEGADO', 'Se requiere cuenta oficial');
+            document.getElementById('editingGameId').value = '';
+            document.getElementById('uploaderModalTitle').textContent = "PUBLICAR JUEGO EN LA NUBE";
+            document.getElementById('customGameName').value = '';
+            document.getElementById('customGameUrl').value = '';
+            document.getElementById('thumbImageUrl').value = '';
+            window.tempHtml = null;
+            document.getElementById('uploaderModal').classList.remove('hidden');
+        }
+
+        function openEditModal(gameId) {
+            if(currentUser !== 'ArcadeIndieOficcial') return;
+            const game = allGames.find(g => g.id === gameId);
+            if(!game) return;
+            document.getElementById('editingGameId').value = game.id;
+            document.getElementById('uploaderModalTitle').textContent = "ACTUALIZAR JUEGO";
+            document.getElementById('customGameName').value = game.title || '';
+            document.getElementById('customGameCategory').value = game.category || 'arcade';
+            document.getElementById('thumbImageUrl').value = game.imageUrl || '';
+            window.tempHtml = game.htmlContent || null;
+            document.getElementById('uploaderModal').classList.remove('hidden');
+        }
+
+        function closeUploaderModal() { document.getElementById('uploaderModal').classList.add('hidden'); }
+
+        function switchSourceTab(source) {
+            currentSourceType = source;
+            document.getElementById('sourceFileContainer').classList.toggle('hidden', source === 'url');
+            document.getElementById('sourceUrlContainer').classList.toggle('hidden', source === 'file');
+            document.getElementById('tabBtnFile').className = source === 'file' ? "py-2.5 rounded-xl text-xs font-bold text-white bg-dark-700 transition-all shadow-md" : "py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all";
+            document.getElementById('tabBtnUrl').className = source === 'url' ? "py-2.5 rounded-xl text-xs font-bold text-white bg-dark-700 transition-all shadow-md" : "py-2.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white transition-all";
+        }
+
+        function handleFileSelected(input) {
+            if(input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('selectedFileName').textContent = `Archivo: ${file.name}`;
+                if(!document.getElementById('customGameName').value) {
+                    let clean = file.name.replace(/\.[^/.]+$/, "");
+                    document.getElementById('customGameName').value = clean.charAt(0).toUpperCase() + clean.slice(1);
+                }
+                const reader = new FileReader();
+                reader.onload = e => { window.tempHtml = e.target.result; };
+                reader.readAsText(file);
+            }
+        }
+
+        async function submitCustomGame() {
+            if(currentUser !== 'ArcadeIndieOficcial') return showToast('Error', 'No autorizado');
+            const editingId = document.getElementById('editingGameId').value;
+            const name = document.getElementById('customGameName').value.trim();
+            const category = document.getElementById('customGameCategory').value;
+            const gradient = document.getElementById('thumbGradient').value;
+            const imageUrl = document.getElementById('thumbImageUrl').value.trim();
+            const gameUrl = document.getElementById('customGameUrl').value.trim();
+
+            if(!name) return showToast('Error', 'Indica el nombre del juego');
+
+            let gameData = { title: name, category, gradient, imageUrl, author: currentUser };
+            if(currentSourceType === 'url') {
+                if(!gameUrl) return showToast('Error', 'Ingresa la URL del juego');
+                gameData.gameUrl = gameUrl;
+            } else if(window.tempHtml) {
+                gameData.htmlContent = window.tempHtml;
+            }
+
+            if(editingId) {
+                await db.collection("arcade_custom_games").doc(editingId).update(gameData);
+                showToast('¡ACTUALIZADO!', 'Juego modificado exitosamente');
+            } else {
+                gameData.likes = [];
+                gameData.createdAt = new Date().toISOString();
+                await db.collection("arcade_custom_games").add(gameData);
+                showToast('¡PUBLICADO!', 'Nuevo juego disponible en la nube');
+            }
+            closeUploaderModal();
+            if(currentGameId && currentGameId === editingId) {
+                loadedGameSource = null;
+                renderWatchDetails(currentGameId);
+            }
+        }
+
+        async function deleteGame(gameId) {
+            if(currentUser !== 'ArcadeIndieOficcial') return;
+            if(!confirm("¿Confirmas la eliminación de este título?")) return;
+            await db.collection("arcade_custom_games").doc(gameId).delete();
+            goHome();
+            showToast('ELIMINADO', 'Título removido de la red');
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if(btn.dataset.cat === cat) {
+                    btn.className = "category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-300 bg-gradient-to-r from-neon-purple/30 to-neon-blue/30 border border-neon-purple/50 text-white shadow-glow-purple";
+                } else {
+                    btn.className = "category-btn w-full flex items-center justify-between px-4 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 text-slate-300 hover:bg-dark-800/80 hover:text-white border border-transparent hover:border-white/10";
+                }
+            });
+            document.querySelectorAll('.category-btn-m').forEach(btn => {
+                if(btn.dataset.catM === cat) {
+                    btn.className = "category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all bg-neon-purple text-dark-950 shadow-glow-purple";
+                } else {
+                    btn.className = "category-btn-m shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all glass-panel text-slate-300";
+                }
+            });
+            renderGames();
+        }
+
+        function handleSearch(q) { searchQuery = q.toLowerCase(); renderGames(); }
+
+        function updateCategoryCounts() {
+            const counts = { todos: allGames.length, accion: 0, puzzle: 0, carreras: 0, deportes: 0, arcade: 0 };
+            allGames.forEach(g => { if(counts[g.category] !== undefined) counts[g.category]++; });
+            for(let cat in counts) {
+                const el = document.getElementById(`count-${cat}`);
+                if(el) el.textContent = counts[cat];
+            }
+        }
+
+        function showToast(title, desc) {
+            const toast = document.getElementById('toastNotification');
+            if(!toast) return;
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastDesc').textContent = desc;
+            toast.classList.remove('translate-y-32', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-32', 'opacity-0'), 3500);
+        }
+    </script>
+</body>
+</html>
